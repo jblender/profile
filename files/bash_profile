@@ -1,0 +1,43 @@
+# .bash_profile
+
+# Get the aliases and functions
+
+# User specific environment and startup programs
+
+PGPPATH=/home/jblender/.pgp
+
+PATH=$PATH:$HOME/.local/bin:$HOME/bin
+
+export PATH
+alias ll='ls -l'
+alias searchrepo='/usr/bin/grep -r --color=auto -I --exclude-dir=build --exclude-dir=bin --exclude-dir=depcache --exclude-dir="*apache*" --exclude-dir=closure --exclude-dir=flume --exclude-dir="hadoop-0.*" --exclude-dir="jetty-distribution*" --exclude-dir=classes --exclude-dir=".hg" --exclude-dir=".metadata" --exclude="*.pyc" --exclude-dir="*/src-gen/*"'
+
+export EDITOR=`which vim`
+export AWS_CREDENTIAL_FILE=~/.aws/credentials.jblender
+export GOPATH=/home/jblender/gocode/
+export ALPHA_HOME=/home/jblender/alpha/
+export INFRA_HOME=/home/jblender/infra
+export ALPHA=$ALPHA_HOME
+export INFRA=$INFRA_HOME
+export CLICOLOR=1
+export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
+
+if [ -z "$SSH_AUTH_SOCK" ] ; then
+  eval `ssh-agent -s`
+  ssh-add
+fi
+
+function update_terraform {
+    pushd /tmp
+    dl_url="https://www.terraform.io/downloads.html"
+    bin_url=$(curl -s $dl_url | grep -A 5 "Linux" | grep "64-bit" | egrep -o "\".*\"" | tr -d "\"")
+    curl $bin_url > terraform_bin.zip
+    gunzip -f -S .zip terraform_bin.zip
+    chmod +x terraform_bin
+    cp terraform_bin /home/jblender/bin/terraform
+    echo $(which terraform)
+    terraform --version
+    popd
+}
+
+source /home/jblender/.secrets

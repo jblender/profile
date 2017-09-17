@@ -1,0 +1,32 @@
+---
+
+# install python2-dnf before using on fedora
+
+- hosts: localhost
+  vars:
+          snoopy: foo
+  remote_user: jblender
+  become: yes
+  tasks:
+  - name: install packages
+    dnf: name={{ item }} state=latest
+    with_items:
+            - cinnamon
+            - tcpdump
+            - vim-enhanced
+            - pritunl-client
+            - bind-utils
+            - jwhois
+            - nmap
+            - golang
+            - libselinux-python
+  - name: bash_profile
+    copy: src=bash_profile dest=/home/jblender/.bash_profile mode=0644 owner=jblender group=jblender 
+  - name: global bash stuff
+    copy: src=bash_stuff.sh dest=/etc/profile.d/bash_stuff.sh mode=0644 owner=root group=root
+
+  - name: secrets file (just its existence)
+    file: path=/home/jblender/.secrets owner=jblender group=jblender mode=0644 state=touch
+
+  - name: user bin directory
+    file: path=/home/jblender/bin owner=jblender group=jblender state=directory
